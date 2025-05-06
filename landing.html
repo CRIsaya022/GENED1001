@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echoes of Kagera</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Spectral:wght@200;300;400;500;600&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            cursor: pointer;
+        }
+        
+        /* Rain Effect */
+        .rain-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .raindrop {
+            position: absolute;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+            width: 1px;
+            height: 20px;
+            border-radius: 0 0 5px 5px;
+            opacity: 0.6;
+            animation-name: fall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            transform: translateY(0);
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+        
+        /* Start Screen */
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .start-text {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 2rem;
+            letter-spacing: 1px;
+            margin-bottom: 15vh;
+            color: rgba(255, 255, 255, 0.85);
+        }
+        
+        .headphones-recommendation {
+            position: absolute;
+            bottom: 50px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .headphones-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .headphones-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Rain Effect Container -->
+    <div class="rain-container" id="rain"></div>
+    
+    <!-- Start Screen -->
+    <div class="start-screen" id="startScreen">
+        <div class="start-text">CLICK TO START</div>
+        <div class="headphones-recommendation">
+            <div class="headphones-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 1a9 9 0 0 0-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7a9 9 0 0 0-9-9z"/>
+                </svg>
+            </div>
+            <div>THIS SITE USES AUDIO<br>HEADPHONES ARE RECOMMENDED</div>
+        </div>
+    </div>
+    
+    <!-- Rain Audio (preloaded but not playing) -->
+    <audio id="rainAudio" loop preload="auto">
+        <source src="assets/audio/rain.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Rain effect function
+            function createRain() {
+                const rainContainer = document.getElementById('rain');
+                const dropCount = 150; // Number of raindrops
+                const windowHeight = window.innerHeight;
+                
+                // Clear any existing raindrops first
+                rainContainer.innerHTML = '';
+                
+                for (let i = 0; i < dropCount; i++) {
+                    const drop = document.createElement('div');
+                    drop.className = 'raindrop';
+                    
+                    // Random positioning - distribute throughout the entire screen height initially
+                    const left = Math.random() * 100; // random x position
+                    const top = Math.random() * windowHeight; // random initial y position throughout the screen
+                    const delay = Math.random() * 2; // shorter random delay
+                    const duration = Math.random() * 0.4 + 0.8; // random duration between 0.8 and 1.2 seconds
+                    
+                    // Apply styles
+                    drop.style.left = `${left}%`;
+                    drop.style.top = `${top}px`; // Set initial y position
+                    drop.style.animationDelay = `${delay}s`;
+                    drop.style.animationDuration = `${duration}s`;
+                    
+                    // Add to container
+                    rainContainer.appendChild(drop);
+                }
+            }
+
+            // Initialize rain effect
+            createRain();
+            
+            // Handle click to start
+            document.getElementById('startScreen').addEventListener('click', () => {
+                const startScreen = document.getElementById('startScreen');
+                
+                // Fade out the start screen
+                startScreen.style.transition = 'opacity 0.5s';
+                startScreen.style.opacity = '0';
+                
+                // Wait for fade out, then redirect
+                setTimeout(() => {
+                    // Set session storage to indicate we're coming from landing
+                    sessionStorage.setItem('fromLanding', 'true');
+                    // Redirect to main page
+                    window.location.href = 'index.html';
+                }, 500);
+            });
+        });
+        
+        // Rain effect initialization
+        function initRain() {
+            const canvas = document.getElementById('rainCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
+            // Initial resize
+            resizeCanvas();
+            
+            // Handle window resize
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Rain drop properties
+            const raindrops = [];
+            const dropCount = 100;
+            
+            // Create initial raindrops
+            for (let i = 0; i < dropCount; i++) {
+                raindrops.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    length: Math.random() * 20 + 10,
+                    speed: Math.random() * 15 + 14
+                });
+            }
+            
+            // Animation function
+            function animate() {
+                // Clear canvas with slight fade effect
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw raindrops
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.lineCap = 'round';
+                
+                for (let drop of raindrops) {
+                    ctx.beginPath();
+                    ctx.moveTo(drop.x, drop.y);
+                    ctx.lineTo(drop.x, drop.y + drop.length);
+                    ctx.stroke();
+                    
+                    // Move drop
+                    drop.y += drop.speed;
+                    
+                    // Reset drop if it's off screen
+                    if (drop.y > canvas.height) {
+                        drop.y = -drop.length;
+                        drop.x = Math.random() * canvas.width;
+                    }
+                }
+                
+                // Continue animation
+                requestAnimationFrame(animate);
+            }
+            
+            // Start animation
+            animate();
+        }
+    </script>
+</body>
+</html>

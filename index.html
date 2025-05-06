@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echoes of Kagera</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Spectral:wght@200;300;400;500;600&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #1a1a1a, #141414);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .section {
+            min-height: 100vh;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        /* Special styling for the first section */
+        #chapter1 {
+            padding: 60px 0;
+            justify-content: center;
+        }
+        /* Lightning Effect */
+        .lightning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0;
+        }
+
+        .lightning-bolt {
+            position: absolute;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.5));
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.7));
+            opacity: 0;
+            transition: opacity 50ms;
+        }
+
+        .lightning-bolt.main {
+            left: 50%;
+            transform: translateX(-50%) rotate(2deg);
+            clip-path: polygon(
+                0 0,
+                100% 0,
+                100% 20%,
+                60% 20%,
+                100% 40%,
+                40% 40%,
+                80% 60%,
+                20% 60%,
+                60% 80%,
+                0 80%,
+                40% 100%,
+                0 100%
+            );
+        }
+
+        .lightning-bolt.left {
+            left: 45%;
+            transform: translateX(-50%) rotate(-15deg) scale(0.7);
+            clip-path: polygon(
+                0 20%,
+                100% 20%,
+                60% 40%,
+                100% 60%,
+                40% 80%,
+                80% 100%,
+                0 100%
+            );
+        }
+
+        .lightning-bolt.right {
+            left: 55%;
+            transform: translateX(-50%) rotate(20deg) scale(0.6);
+            clip-path: polygon(
+                100% 30%,
+                0 30%,
+                40% 50%,
+                0 70%,
+                60% 90%,
+                20% 100%,
+                100% 100%
+            );
+        }
+
+        .lightning-flash {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 70%);
+            opacity: 0;
+        }
+
+        /* Title Animation */
+        @keyframes titleAppear {
+            0% {
+                opacity: 0;
+                transform: scale(1.5) rotate(-5deg);
+                filter: blur(10px);
+            }
+            20% {
+                opacity: 0.8;
+                transform: scale(1.2) rotate(3deg);
+                filter: blur(5px);
+            }
+            40% {
+                opacity: 0.6;
+                transform: scale(1.1) rotate(-2deg);
+                filter: blur(3px);
+            }
+            60% {
+                opacity: 0.8;
+                transform: scale(1.05) rotate(1deg);
+                filter: blur(2px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+                filter: blur(0);
+            }
+        }
+
+        .main-title {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 7.5rem;
+            margin: 144px auto 1rem; /* 1.5 inches from top */
+            text-align: center;
+            width: 100%;
+            opacity: 0;
+            transform-origin: center;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.02em;
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .main-title.animate {
+            animation: titleAppear 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            margin: 0.5rem 0;
+            width: 100%;
+            font-size: 1.1rem;
+            font-style: italic;
+            font-family: 'Spectral', serif;
+            letter-spacing: 0.02em;
+            line-height: 1.4;
+        }
+        .chapter-label {
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255,255,255,0.6);
+            width: 100%;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+
+        /* Special margin for first chapter label */
+        #chapter1 .chapter-label {
+            margin-top: 288px; /* 3 inches */
+        }
+        .chapter-title {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 3.5rem;
+            text-align: center;
+            margin: 0.5rem auto 2rem;
+            width: 100%;
+            letter-spacing: 0.02em;
+            transform-origin: center;
+            transition: all 0.3s ease;
+            background-image: linear-gradient(45deg, #ffffff 30%, #e0e0e0 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+            text-transform: uppercase;
+            will-change: transform;
+        }
+        .narrative-text {
+            font-family: 'Spectral', serif;
+            font-size: 1.25rem;
+            line-height: 1.8;
+            max-width: 100%;
+            margin: 0 0 2rem;
+            padding: 0 96px; /* 1 inch from both margins */
+            color: rgba(255,255,255,0.9);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Rain Effect */
+        .rain-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .raindrop {
+            position: absolute;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+            width: 1px;
+            height: 20px;
+            border-radius: 0 0 5px 5px;
+            opacity: 0.6;
+            animation-name: fall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            /* Initial position set by JavaScript */
+            transform: translateY(0);
+        }
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(25vh) rotate(2deg);
+            }
+            75% {
+                transform: translateY(75vh) rotate(-2deg);
+            }
+            100% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+        }
+        
+        /* Chapter Sidebar */
+        /* Control Buttons */
+        .control-buttons {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .control-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-button svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+            opacity: 0.8;
+        }
+
+        .control-button.active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .control-button.active svg {
+            opacity: 1;
+        }
+
+        .chapter-sidebar {
+            position: fixed;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .chapter-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+        .chapter-link:hover {
+            color: rgba(255, 255, 255, 1);
+        }
+        .chapter-link .chapter-dot {
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            margin-right: 8px;
+            transition: all 0.3s ease;
+        }
+        .chapter-link:hover .chapter-dot {
+            background: white;
+            border-color: white;
+        }
+        .chapter-link.active {
+            color: white;
+        }
+        .chapter-link.active .chapter-dot {
+            background: white;
+            border-color: white;
+        }
+        .chapter-link .chapter-number {
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+        .chapter-link:hover .chapter-number {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .chapter-link.active .chapter-number {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        /* Audio Controls */
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .audio-controls button {
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .audio-controls button:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <!-- Control Buttons -->
+    <div class="control-buttons">
+        <button class="control-button" id="playButton" title="Toggle Sound">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+        </button>
+        <button class="control-button" id="autoScrollButton" title="Toggle Auto-scroll">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/>
+            </svg>
+        </button>
+        <button class="control-button" id="fullScreenButton" title="Toggle Full-screen">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Rain Effect Container -->
+    <div class="rain-container" id="rain"></div>
+    
+    <!-- Rain Audio -->
+    <audio id="rainAudio" loop>
+        <source src="assets/audio/rain.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- Check if coming from landing page -->
+    <script>
+        // This script checks if the user is coming from landing page
+        // If not, redirect to landing page
+        if (!sessionStorage.getItem('fromLanding')) {
+            window.location.href = 'landing.html';
+        } else if (sessionStorage.getItem('audioStarted')) {
+            // Start playing audio immediately when coming from landing page
+            const rainAudio = document.getElementById('rainAudio');
+            rainAudio.volume = 0.3;
+            rainAudio.play().catch(e => console.log('Audio play failed: ', e));
+        }
+    </script>
+    
+    <!-- Chapter Sidebar -->
+    <nav class="chapter-sidebar">
+        <a href="#intro" class="chapter-link" data-chapter="intro">
+            <div class="chapter-dot"></div>
+            <span class="chapter-number">Intro</span>
+        </a>
+        <a href="#chapter1" class="chapter-link" data-chapter="chapter1">
+            <div class="chapter-dot"></div>
+            <span class="chapter-number">Ch. 1</span>
+        </a>
+        <a href="#chapter2" class="chapter-link" data-chapter="chapter2">
+            <div class="chapter-dot"></div>
+            <span class="chapter-number">Ch. 2</span>
+        </a>
+        <a href="#chapter3" class="chapter-link" data-chapter="chapter3">
+            <div class="chapter-dot"></div>
+            <span class="chapter-number">Ch. 3</span>
+        </a>
+        <a href="#chapter4" class="chapter-link" data-chapter="chapter4">
+            <div class="chapter-dot"></div>
+            <span class="chapter-number">Ch. 4</span>
+        </a>
+        <a href="#chapter5" class="chapter-link" data-chapter="chapter5">
+            <div class="chapter-dot"></div>
+            <span class="chapter-number">Ch. 5</span>
+        </a>
+        <a href="#chapter6" class="chapter-link" data-chapter="chapter6">
+            <div class="chapter-dot"></div>
+            <span class="chapter-number">Ch. 6</span>
+        </a>
+        <a href="#chapter7" class="chapter-link" data-chapter="chapter7">
+            <div class="chapter-dot"></div>
+            <span class="chapter-number">Ch. 7</span>
+        </a>
+    </nav>
+    
+    <!-- Main Title Section -->
+    <!-- Lightning Effect -->
+    <div class="lightning" id="lightning"></div>
+
+    <div id="intro" class="section">
+        <div class="main-title" id="mainTitle">THE 1978<br>APPLECALYPSE</div>
+        <div class="subtitle-container" style="margin-bottom: 4rem;">
+            <p class="subtitle">A bar conflict that sparked an international conflict</p>
+            <p class="subtitle" style="color: rgba(255,255,255,0.6);">Based on a True Story</p>
+        </div>
+
+    <!-- Chapter 1 Section -->
+    <div id="chapter1" class="section">
+        <!-- Chapter 1 Title -->
+    <p class="chapter-label">CHAPTER 1</p>
+    <h2 class="chapter-title">THE ALTAR<br>AND THE BARRACKS</h2>
+
+    <!-- Chapter 1 Content -->
+    <p class="narrative-text">He was born in a house where prayers were louder than arguments.</p>
+                    
+    <p class="narrative-text">Every morning began with scripture. Psalms before breakfast. Proverbs with porridge. His mother's voice lingered through the kitchen, soft and steady, while his father's voice boomed from the pulpit of the village church.</p>
+    
+    <p class="narrative-text">The plan was made before he even knew what a plan was.</p>
+    
+    <p class="narrative-text">He would be a priest, like his father. That's what everyone said. The boy with good posture and a calm voice. The boy who could memorize entire psalms after hearing them once. The boy who never missed Sunday service, not even when he had a fever.</p>
+    
+    <p class="narrative-text">He didn't fight it. At least not at first.</p>
+    
+    <p class="narrative-text">There was a kind of comfort in the rituals. In the polished shoes, the starched shirts, the rhythm of his father's sermons rising and falling like waves. He liked the stillness, the structure, even the heavy silence of the chapel when the service ended and everyone bowed their heads.</p>
+    
+    <p class="narrative-text">But something else stirred in him too.</p>
+    
+    <p class="narrative-text">Outside, the world felt alive. There was laughter on the soccer field. Dust kicked up from bare feet. His friends played until the sky turned pink, shouting names and chasing stitched together balls. He loved those afternoons more than Sunday mornings. Out there, he could run. Out there, he could dream.</p>
+    
+    <p class="narrative-text">His father never noticed the difference. But his mother did.</p>
+    
+    <p class="narrative-text">She watched how he lingered outside after dusk. How his answers grew shorter when people asked about seminary. How he folded his church shirts slower, like the fabric was heavier than it used to be.</p>
+    
+    <p class="narrative-text">She knew the signs. Not because someone told her, but because she had once dreamed of more too. Not just scripture and survival, but a future with choices.</p>
+    
+    <p class="narrative-text">Their family wasn't starving, but they weren't safe either. The priesthood gave them respect, but not comfort. Not options. And deep down, she saw it in him; he wanted more. Not more than God. Just more than one path.</p>
+    
+    <p class="narrative-text">So when he came to her late one night, voice low and unsure, and said, "Mama, I don't want to go to seminary," she didn't scold him. She didn't cry.</p>
+    
+    <p class="narrative-text">She nodded.</p>
+    
+    <p class="narrative-text">Then she reached into her kitenge, pulled out a bundle of shillings she'd been saving for emergencies, and pressed it into his hand.</p>
+    
+    <p class="narrative-text">"Go early," she said. "Before he wakes."</p>
+    
+    <p class="narrative-text">He left before dawn. With a spare shirt, a piece of bread, and no goodbyes.</p>
+    
+    <p class="narrative-text">By sunset, his name was on a list.</p>
+    
+    <p class="narrative-text">By the next morning, he was a soldier.</p>
+    
+    <p class="narrative-text">And he thought the hardest part was already over.</p>
+
+    <hr style="border: none; margin: 6rem 0;">
+
+    </div>
+
+    <!-- Chapter 2 Section -->
+    <div id="chapter2" class="section">
+        <!-- Chapter 2 Title -->
+        <p class="chapter-label">CHAPTER 2</p>
+        <h2 class="chapter-title">A BAR FIGHT<br>THAT SPARKED A WAR</h2>
+
+    <!-- Chapter 2 Content -->
+    <p class="narrative-text">The war didn't start with a speech. Or a siren. Or a flag raised in warning.</p>
+    
+    <p class="narrative-text">It started with a bottle.</p>
+    
+    <p class="narrative-text">A small border town. A dusty bar. A few Ugandan soldiers drinking late into the evening. A group of Tanzanian locals already seated when they walked in. The details are blurry, even now. Some say it was a joke that landed wrong. Others say it was about a girl, or territory, or pride.</p>
+    
+    <p class="narrative-text">There was shouting. Then a shove.</p>
+    
+    <p class="narrative-text">Then glass breaking.</p>
+    
+    <p class="narrative-text">Then a gunshot.</p>
+    
+    <p class="narrative-text">One bullet turned a drunken argument into a spark. A spark in a dry field already waiting to catch fire.</p>
+    
+    <p class="narrative-text">But the truth is, the flames had been building for years.</p>
+    
+    <p class="narrative-text">Back in 1971, Idi Amin had overthrown Milton Obote and taken power in Uganda. Obote fled to Tanzania, where President Julius Nyerere gave him refuge. It was a bold move, maybe even personal. Amin never forgot it. And Nyerere didn't back down.</p>
+    
+    <p class="narrative-text">The tension between the two leaders stretched like rope pulled too tight. There were accusations, rumors of invasions, stories whispered in border towns about raids, missing people, strange flights overhead.</p>
+    
+    <p class="narrative-text">Ugandan MIG jets had already tested Tanzanian skies. And then, one day, the tests stopped being tests.</p>
+    
+    <p class="narrative-text">In late 1978, Ugandan troops crossed the Kagera River, marching into Tanzanian territory as if it belonged to them. Homes were looted. Families fled. Some tried to fight with farming tools and iron cooking pots. Others just ran.</p>
+    
+    <p class="narrative-text">The air grew thick with fear. Radios buzzed with updates no one wanted to hear. Men began digging trenches behind their houses. Women packed emergency bags with what little they had: flour, soap, prayer beads.</p>
+    
+    <p class="narrative-text">In Dar es Salaam, government officials pored over maps and orders.</p>
+    
+    <p class="narrative-text">In the villages, people stopped sleeping through the night.</p>
+    
+    <p class="narrative-text">And in the barracks, soldiers stood a little straighter. Their drills got louder and jokes fewer.</p>
+    
+    <p class="narrative-text">On November 2, 1978, Tanzania officially declared war on Uganda.</p>
+    
+    <p class="narrative-text">He heard the news standing outside the mess hall, one hand on his mess tin, the other gripping the edge of a bench too tightly. His name hadn't been called yet, but he could feel it coming. Like thunder before the rain.</p>
+    
+    <p class="narrative-text">He was still new. Still figuring out how to fold his uniform the right way. Still pretending he didn't miss home. Still unsure how to hold his rifle without feeling like it might fall apart in his hands.</p>
+    
+    <p class="narrative-text">But now, there was no time to hesitate.</p>
+    
+    <p class="narrative-text">Somewhere, soldiers were already on the move. And soon, he would be too.</p>
+
+    <hr style="border: none; margin: 6rem 0;">
+
+    </div>
+
+    <!-- Chapter 3 Section -->
+    <div id="chapter3" class="section">
+        <!-- Chapter 3 Title -->
+        <p class="chapter-label">CHAPTER 3</p>
+        <h2 class="chapter-title">THE BORDER<br>BURNS</h2>
+
+    <!-- Chapter 3 Content -->
+    <p class="narrative-text">The list was up before sunrise.</p>
+    
+    <p class="narrative-text">It was pinned crookedly to the notice board outside the mess hall. A single page. A few dozen names. The ink was still wet in some places.</p>
+    
+    <p class="narrative-text">He read it slowly, like the letters might change if he blinked.</p>
+    
+    <p class="narrative-text">Halfway down: Private First Class – 202 Tabora Brigade.</p>
+    
+    <p class="narrative-text">There was no speech. No salute. Just a cold morning and the quiet sound of men swallowing whatever fear they didn't want to show.</p>
+    
+    <p class="narrative-text">The 202 was going west. To Kagera.</p>
+    
+    <p class="narrative-text">To where the line had been crossed.</p>
+    
+    <p class="narrative-text">They were told to pack light and move fast.</p>
+
+    <p class="narrative-text">She was already underground.</p>
+    
+    <p class="narrative-text">Eighteen years old, crouched in a trench her father had dug behind the house. It wasn't deep, just enough to hide the family if the planes came back.</p>
+    
+    <p class="narrative-text">They had started digging when the rumors became sirens—when people said Ugandan jets had bombed border towns, and some homes had just vanished. One neighbor tried to drive away. He never came back.</p>
+    
+    <p class="narrative-text">Her little brother cried the first night they hid. She held him tight and whispered stories about animals that could fly, trees that could sing. He listened. She lied well.</p>
+    
+    <p class="narrative-text">The truth was, she was scared too.</p>
+    
+    <p class="narrative-text">Not of death, exactly. But of not knowing. Of being trapped beneath the dirt, waiting for a sound that would mean everything was gone.</p>
+    
+    <p class="narrative-text">He boarded the truck in silence.</p>
+    
+    <p class="narrative-text">The metal bed was cold under him. His rifle rested across his lap, the strap too tight across his chest. Around him, other young men stared at the road ahead or closed their eyes like that might slow things down.</p>
+    
+    <p class="narrative-text">They passed fields, then trees, then homes that had been burned to the frame. It was the first time he'd seen a house without walls, just a skeleton. Smoke curled up from a roofless shell.</p>
+    
+    <p class="narrative-text">He didn't speak. Neither did anyone else.</p>
+    
+    <p class="narrative-text">The first boom made the truck tremble.</p>
+    
+    <p class="narrative-text">It came from somewhere ahead. A dull, deep sound that pressed into his chest more than his ears. He didn't know what had exploded, or who had fired, or whether he was supposed to duck.</p>
+    
+    <p class="narrative-text">The second boom came quicker.</p>
+    
+    <p class="narrative-text">Then came the shouting.</p>
+    
+    <p class="narrative-text">Orders, names, code words. Some men jumped down. He stayed until someone grabbed his arm and pulled.</p>
+    
+    <p class="narrative-text">She felt the tremor before she heard the noise.</p>
+    
+    <p class="narrative-text">The trench shook, and dust fell from the edge onto her skirt. Her brother squeezed her tighter. Their father cursed. Their mother prayed.</p>
+    
+    <p class="narrative-text">She held her breath.</p>
+    
+    <p class="narrative-text">And then another blast came.</p>
+    
+    <p class="narrative-text">He crouched behind a rock, heart pounding in his throat.</p>
+    
+    <p class="narrative-text">Smoke was rising not far ahead. His hands shook, but his grip on the rifle tightened.</p>
+    
+    <p class="narrative-text">This was real now.</p>
+    
+    <p class="narrative-text">This was war.</p>
+    
+    <p class="narrative-text">And just a few miles away, a girl sat in silence, waiting for the sky to fall again.</p>
+
+    <hr style="border: none; margin: 6rem 0;">
+
+    </div>
+
+    <!-- Chapter 4 Section -->
+    <div id="chapter4" class="section">
+        <!-- Chapter 4 Title -->
+        <p class="chapter-label">CHAPTER 4</p>
+        <h2 class="chapter-title">SMOKE OVER<br>KAGERA</h2>
+
+    <!-- Chapter 4 Content -->
+    <p class="narrative-text">You could smell the war before you saw it.</p>
+    
+    <p class="narrative-text">The air near Kagera was thick with it, smoke, metal, the burnt tang of something ruined. It clung to the back of the throat and settled into clothes. It made everything taste like ash.</p>
+    
+    <p class="narrative-text">When the truck stopped, he jumped down with the others. The soles of his boots sank slightly into soft earth, earth that had once been farmland, now scorched and scattered with pieces of someone's former life.</p>
+    
+    <p class="narrative-text">A cooking pot.</p>
+    
+    <p class="narrative-text">A child's sandal.</p>
+    
+    <p class="narrative-text">A rusted bicycle with no wheels.</p>
+    
+    <p class="narrative-text">The village had been emptied. Not by time, but by force. He didn't know where the people had gone. Or if they'd made it out at all.</p>
+    
+    <p class="narrative-text">Their orders were to move forward and secure the area. But there was nothing left to secure. Just smoke rising in columns, like messages sent too late.</p>
+    
+    <p class="narrative-text">He kept walking.</p>
+
+    <p class="narrative-text">She hadn't left the trench in three days.</p>
+    
+    <p class="narrative-text">The rains had come, and now everything inside was damp: her clothes, her books, even her thoughts. Her little brother had stopped asking when they could come out. He just sat beside her, chin on his knees, eyes watching the sky like it owed him something.</p>
+    
+    <p class="narrative-text">Her father came down once a day, passed them food wrapped in cloth, told them to stay put. He didn't say much. Just looked out across the field before climbing back up.</p>
+    
+    <p class="narrative-text">She'd stopped telling stories.</p>
+    
+    <p class="narrative-text">There weren't any left that didn't sound like lies.</p>
+    
+    <p class="narrative-text">He saw his first body that morning.</p>
+    
+    <p class="narrative-text">A man lying face down in a ditch. No helmet. No rifle. Just stillness. His uniform was too small, his boots mismatched. He looked like someone who had been a soldier for only a few days.</p>
+    
+    <p class="narrative-text">Maybe even less.</p>
+    
+    <p class="narrative-text">No one said anything. They just stepped around him.</p>
+    
+    <p class="narrative-text">Later, they found a church. Or what used to be one.</p>
+    
+    <p class="narrative-text">The roof had collapsed in the middle, letting the sky peek through. The wooden benches were charred, the altar broken in half. But the walls still stood.</p>
+    
+    <p class="narrative-text">He sat on the steps, wiping sweat from his face.</p>
+    
+    <p class="narrative-text">He hadn't thought about his father's church in days.</p>
+    
+    <p class="narrative-text">Now, it was all he could think about.</p>
+    
+    <p class="narrative-text">The quiet. The rhythm. The voice from the pulpit.</p>
+    
+    <p class="narrative-text">He wondered if his father would even recognize him now.</p>
+    
+    <p class="narrative-text">She finally stepped out of the trench at dusk.</p>
+    
+    <p class="narrative-text">The world looked the same, but it felt different. The silence wasn't peace. It was waiting.</p>
+    
+    <p class="narrative-text">Their house was still standing, but part of the roof had caved in. Her mother swept the floor like the dust would listen. Her father sat on a stool, staring at nothing.</p>
+    
+    <p class="narrative-text">She didn't cry.</p>
+    
+    <p class="narrative-text">She didn't speak.</p>
+    
+    <p class="narrative-text">She just took her brother's hand and stood still.</p>
+
+    <hr style="border: none; margin: 6rem 0;">
+
+    </div>
+
+    <!-- Chapter 5 Section -->
+    <div id="chapter5" class="section">
+        <!-- Chapter 5 Title -->
+        <p class="chapter-label">CHAPTER 5</p>
+        <h2 class="chapter-title">CROSSING<br>OVER</h2>
+
+    <!-- Chapter 5 Content -->
+    <p class="narrative-text">The order came early—too early for anyone to pretend it wasn't coming.</p>
+    
+    <p class="narrative-text">They were told to pack up quickly and prepare to cross the border. No details. Just a direction and a destination: Uganda.</p>
+    
+    <p class="narrative-text">The men didn't speak much. They didn't need to. They had seen the smoke rising from Kagera. They had walked through broken houses and empty doorways. Now they were being told to keep moving, to go deeper into the story, into the place the fire had come from.</p>
+    
+    <p class="narrative-text">He sat in the back of the truck again, the M35 rattling beneath him. His rifle was clean, but he still checked it twice. The road ahead was red with dust, and the trees passed slowly, as if watching them go.</p>
+    
+    <p class="narrative-text">They crossed the river just before noon.</p>
+    
+    <p class="narrative-text">No marker. No sign. No flag to salute or step around. One second they were in Tanzania. The next, they weren't.</p>
+    
+    <p class="narrative-text">Just like that, he was inside another country, boots pressing into foreign soil.</p>
+
+    <p class="narrative-text">She was above ground again, but the world didn't feel any more stable.</p>
+    
+    <p class="narrative-text">There was still smoke on the horizon, and people still whispered at markets and water pumps. But the bombs had stopped—at least for now.</p>
+    
+    <p class="narrative-text">Still, she kept her shoes near the door and her school bag packed, just in case.</p>
+    
+    <p class="narrative-text">School had started again, technically. A few desks, some chalk, and a teacher who spoke without raising his voice. The class was smaller than before. Some had relocated. Some had vanished.</p>
+    
+    <p class="narrative-text">She didn't ask which.</p>
+    
+    <p class="narrative-text">At lunch, she sat under a mango tree and peeled an orange with slow fingers. Her brother ran past, chasing a ball with other boys. Their laughter was soft, like they didn't want to wake the silence.</p>
+
+    <p class="narrative-text">He marched through Ugandan towns that didn't feel like towns.</p>
+    
+    <p class="narrative-text">There were houses, yes, but most were empty. A few had people inside, watching from behind doors that stayed half-closed. Some nodded. Others didn't.</p>
+    
+    <p class="narrative-text">He passed a classroom where the chalkboard still held a math problem, half-solved.</p>
+    
+    <p class="narrative-text">He passed a church with its cross still standing.</p>
+    
+    <p class="narrative-text">He passed a market stall with nothing on its shelves but a tin cup.</p>
+    
+    <p class="narrative-text">His boots scuffed the dirt. His shoulders ached.</p>
+    
+    <p class="narrative-text">They stopped near a hill that night and were told to set up camp. He rolled out his mat and lay under the stars.</p>
+    
+    <p class="narrative-text">It was quiet, but not peaceful. Just tired.</p>
+    
+    <p class="narrative-text">She dreamt of planes that night. Of loud skies and holes in the ground.</p>
+    
+    <p class="narrative-text">When she woke up, it was still dark.</p>
+    
+    <p class="narrative-text">But there were no sirens.</p>
+    
+    <p class="narrative-text">No footsteps above.</p>
+    
+    <p class="narrative-text">Just breath.</p>
+    
+    <p class="narrative-text">Her own.</p>
+    
+    <p class="narrative-text">Still going.</p>
+
+    <hr style="border: none; margin: 6rem 0;">
+
+    </div>
+
+    <!-- Chapter 6 Section -->
+    <div id="chapter6" class="section">
+        <!-- Chapter 6 Title -->
+        <p class="chapter-label">CHAPTER 6</p>
+        <h2 class="chapter-title">AFTER THE<br>SMOKE</h2>
+
+    <!-- Chapter 6 Content -->
+    <p class="narrative-text">The war ended, but it didn't end all at once.</p>
+    
+    <p class="narrative-text">There were no sirens, no single moment when people cheered and said, "It's over." It ended in pieces—orders recalled, guns lowered, boots turned toward home.</p>
+    
+    <p class="narrative-text">He was standing outside the barracks when they told him. Kampala had fallen. Amin was gone.</p>
+    
+    <p class="narrative-text">There would be no more crossing over. No more waiting.</p>
+    
+    <p class="narrative-text">Some men smiled. Some didn't react at all. He just sat down on the edge of a concrete slab and took off his boots. His feet ached more than his chest, but it was close.</p>
+
+    <p class="narrative-text">Before he had time to think about what "after" really meant, he was reassigned.</p>
+    
+    <p class="narrative-text">"Arusha," the officer said. "You leave tomorrow."</p>
+    
+    <p class="narrative-text">No explanation. No questions. Just a new set of orders.</p>
+    
+    <p class="narrative-text">He climbed into the M35 again. A different kind of ride this time. No guns at the ready. No attack maps. Just road, hills, and silence.</p>
+    
+    <p class="narrative-text">He didn't know what waited for him in Arusha.</p>
+    
+    <p class="narrative-text">But he was ready for quiet.</p>
+    
+    <p class="narrative-text">She was headed there too.</p>
+    
+    <p class="narrative-text">Not as a soldier. As one of many being relocated. Her family had been selected for resettlement—a safer area, officials said, far from the border, far from anything that might come back.</p>
+    
+    <p class="narrative-text">They packed light. Just clothes, a cooking pot, and what they could carry.</p>
+    
+    <p class="narrative-text">The bus was older than it looked. It wheezed when it climbed hills and groaned when it slowed down. The driver didn't talk much. Neither did the passengers.</p>
+    
+    <p class="narrative-text">She sat near the back with her brother. He had a lollipop in his mouth, his first in months. Her mother sat across the aisle, her hands folded in her lap like a prayer she didn't want to say aloud.</p>
+    
+    <p class="narrative-text">Her father had stayed behind to rebuild what was left of their home.</p>
+    
+    <p class="narrative-text">The road twisted through empty stretches of land and then into the highlands. The air got cooler. The sky opened wide.</p>
+    
+    <p class="narrative-text">She watched it through the window, one cheek against the glass.</p>
+    
+    <p class="narrative-text">He leaned back against the wooden wall of the truck bed, helmet resting on his thigh.</p>
+    
+    <p class="narrative-text">There was no rush in his chest. No fear. Just a strange kind of emptiness. Like he'd been holding his breath for months and had only just remembered to let it out.</p>
+    
+    <p class="narrative-text">He didn't know who would be in Arusha. Or what his assignment would be. He didn't care.</p>
+    
+    <p class="narrative-text">He just wanted to arrive. And stay still for once.</p>
+    
+    <p class="narrative-text">Two vehicles.</p>
+    
+    <p class="narrative-text">Two people.</p>
+    
+    <p class="narrative-text">Both on the same road.</p>
+    
+    <p class="narrative-text">They didn't know it yet.</p>
+    
+    <p class="narrative-text">But the war that tore everything apart</p>
+    
+    <p class="narrative-text">was slowly bringing them toward each other.</p>
+
+    <hr style="border: none; margin: 6rem 0;">
+
+    </div>
+
+    <!-- Chapter 7 Section -->
+    <div id="chapter7" class="section">
+        <!-- Chapter 7 Title -->
+        <p class="chapter-label">CHAPTER 7</p>
+        <h2 class="chapter-title">THE<br>APPLECALYPSE</h2>
+
+    <!-- Chapter 7 Content -->
+    <p class="narrative-text">The bus broke down on a long stretch of road just a few hours outside Arusha.</p>
+    
+    <p class="narrative-text">It stuttered, groaned, then gave up completely. The driver stepped out, wiped sweat from his brow, and opened the hood like it might offer him an answer. The passengers waited quietly, stepping off one by one to stretch their legs and fan themselves.</p>
+    
+    <p class="narrative-text">She stood with her brother beside a patch of tall grass. The road shimmered in the heat. Her sandals were dusty. Her face was tired.</p>
+    
+    <p class="narrative-text">She wasn't nervous. Just still. The kind of stillness that comes after too many days of running.</p>
+    
+    <p class="narrative-text">Then came the low rumble, growing louder by the second.</p>
+
+    <p class="narrative-text">An M35 military truck rolled over the ridge behind them. A few soldiers rode in the back, their heads bobbing gently with the bumps in the road. The truck slowed when it reached the stranded bus.</p>
+    
+    <p class="narrative-text">One of the soldiers hopped down. Then another.</p>
+    
+    <p class="narrative-text">He was one of them.</p>
+    
+    <p class="narrative-text">He didn't expect anything unusual. Just a quick stop. Help the civilians. Get back in the truck. Reach the base. Sleep.</p>
+    
+    <p class="narrative-text">But then he saw her.</p>
+    
+    <p class="narrative-text">She was standing by the roadside, shielding her brother from the sun with one arm. Her blouse was wrinkled, her shoes worn, but her face, her face was steady. Calm, but alert.</p>
+    
+    <p class="narrative-text">Their eyes met.</p>
+    
+    <p class="narrative-text">Only for a second.</p>
+    
+    <p class="narrative-text">Long enough.</p>
+    
+    <p class="narrative-text">He looked away. Then looked back.</p>
+    
+    <p class="narrative-text">She hadn't moved.</p>
+    
+    <p class="narrative-text">I don't know the aftermath of this.</p>
+    
+    <p class="narrative-text">But what I know is that I'm one of the six lovely children of these two.</p>
+    
+    <p class="narrative-text">The war ended many things.</p>
+    
+    <p class="narrative-text">But not everything.</p>
+    
+    <p class="narrative-text">Sometimes, endings create space for things to grow.</p>
+    
+    <p class="narrative-text">Just like apples are a symbol of love,</p>
+    
+    <p class="narrative-text">I chose to name this apocalypse "The Applecalypse."</p>
+    
+    <p class="narrative-text">Not because it was filled with love, but because it brought together a love story that led to my existence.</p>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Force immediate visibility of all elements
+        document.addEventListener('DOMContentLoaded', () => {
+            // Control buttons functionality
+            const playButton = document.getElementById('playButton');
+            const autoScrollButton = document.getElementById('autoScrollButton');
+            const fullScreenButton = document.getElementById('fullScreenButton');
+            const rainAudio = document.getElementById('rainAudio');
+            
+            // Auto-scroll variables
+            let isAutoScrolling = false;
+            let autoScrollInterval;
+            const scrollSpeed = 1; // pixels per frame
+            
+            // Play/Pause functionality
+            playButton.addEventListener('click', () => {
+                if (rainAudio.paused) {
+                    rainAudio.play();
+                    playButton.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                        </svg>
+                    `;
+                    playButton.classList.add('active');
+                } else {
+                    rainAudio.pause();
+                    playButton.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm7.03 6.92l1.71 1.71c.98-.98 1.57-2.31 1.57-3.63 0-1.32-.59-2.65-1.57-3.63l-1.71 1.71c.55.55.88 1.26.88 2.02s-.33 1.47-.88 2.02z"/>
+                        </svg>
+                    `;
+                    playButton.classList.remove('active');
+                }
+            });
+            
+            // Auto-scroll functionality
+            autoScrollButton.addEventListener('click', () => {
+                if (isAutoScrolling) {
+                    // Stop auto-scrolling
+                    cancelAnimationFrame(autoScrollInterval);
+                    isAutoScrolling = false;
+                    autoScrollButton.classList.remove('active');
+                } else {
+                    // Start auto-scrolling
+                    isAutoScrolling = true;
+                    autoScrollButton.classList.add('active');
+                    const scroll = () => {
+                        window.scrollBy(0, scrollSpeed);
+                        if (isAutoScrolling) {
+                            autoScrollInterval = requestAnimationFrame(scroll);
+                        }
+                    };
+                    scroll();
+                }
+            });
+            
+            // Full-screen functionality
+            fullScreenButton.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                    fullScreenButton.classList.add('active');
+                } else {
+                    document.exitFullscreen();
+                    fullScreenButton.classList.remove('active');
+                }
+            });
+
+            // Check if we're coming from the landing page
+            if (sessionStorage.getItem('fromLanding')) {
+                const lightning = document.getElementById('lightning');
+                const mainTitle = document.getElementById('mainTitle');
+                
+                // Create lightning elements
+                const mainBolt = document.createElement('div');
+                mainBolt.className = 'lightning-bolt main';
+                const leftBolt = document.createElement('div');
+                leftBolt.className = 'lightning-bolt left';
+                const rightBolt = document.createElement('div');
+                rightBolt.className = 'lightning-bolt right';
+                const flash = document.createElement('div');
+                flash.className = 'lightning-flash';
+                
+                lightning.appendChild(mainBolt);
+                lightning.appendChild(leftBolt);
+                lightning.appendChild(rightBolt);
+                lightning.appendChild(flash);
+
+                // Function to create lightning effect
+                const flashLightning = () => {
+                    lightning.style.opacity = '1';
+                    flash.style.transition = 'opacity 50ms';
+                    
+                    // Main bolt sequence
+                    mainBolt.style.opacity = '1';
+                    flash.style.opacity = '0.3';
+                    
+                    // Branch bolts
+                    setTimeout(() => {
+                        leftBolt.style.opacity = '1';
+                        rightBolt.style.opacity = '1';
+                        flash.style.opacity = '0.4';
+                    }, 50);
+
+                    // Fade first flash
+                    setTimeout(() => {
+                        flash.style.opacity = '0.1';
+                        mainBolt.style.opacity = '0.7';
+                        leftBolt.style.opacity = '0.5';
+                        rightBolt.style.opacity = '0.5';
+                    }, 100);
+
+                    // Second flash
+                    setTimeout(() => {
+                        mainBolt.style.opacity = '0.9';
+                        leftBolt.style.opacity = '0.7';
+                        rightBolt.style.opacity = '0.7';
+                        flash.style.opacity = '0.2';
+                    }, 150);
+
+                    // Final fade
+                    setTimeout(() => {
+                        mainBolt.style.opacity = '0';
+                        leftBolt.style.opacity = '0';
+                        rightBolt.style.opacity = '0';
+                        flash.style.opacity = '0';
+                        lightning.style.opacity = '0';
+                        // Start title animation after the flash
+                        mainTitle.classList.add('animate');
+                    }, 200);
+                };
+                
+                // Trigger lightning and title animation after a short delay
+                setTimeout(flashLightning, 500);
+                
+                // Clear the session storage flag
+                sessionStorage.removeItem('fromLanding');
+            } else {
+                // If not coming from landing, just show the title
+                document.getElementById('mainTitle').style.opacity = '1';
+            }
+            // document.querySelector('.title-container').style.transform = 'translateY(0)';
+            
+            // Show chapter title
+            // document.querySelector('.chapter-title-container').style.opacity = '1';
+            // document.querySelector('.chapter-title-container').style.transform = 'translateY(0)';
+            
+            // Show chapter content
+            // document.querySelector('.narrative-container').style.opacity = '1';
+            // document.querySelector('.narrative-text').style.opacity = '1';
+            // document.querySelector('.narrative-text').style.transform = 'translateY(0)';
+            
+            // Create rain effect
+            createRain();
+            
+            // Initialize audio volume
+            rainAudio.volume = 0.3; // Set volume to 30%
+            
+            // Start audio if coming from landing page
+            if (sessionStorage.getItem('audioStarted')) {
+                rainAudio.play();
+                playButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                    </svg>
+                `;
+                playButton.classList.add('active');
+                sessionStorage.removeItem('audioStarted');
+            }
+            
+            // Set up chapter navigation
+            setupChapterNavigation();
+        });
+        
+        // Chapter navigation function
+        function setupChapterNavigation() {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.chapter-link');
+            
+            // Highlight active section on scroll
+            window.addEventListener('scroll', () => {
+                let current = '';
+                
+                sections.forEach((section) => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (pageYOffset >= (sectionTop - sectionHeight / 3)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach((link) => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('data-chapter') === current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+            
+            // Smooth scroll to section on click
+            navLinks.forEach((link) => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    window.scrollTo({
+                        top: targetSection.offsetTop,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        }
+        
+        // Rain effect function
+        function createRain() {
+            const rainContainer = document.getElementById('rain');
+            const dropCount = 150; // Number of raindrops
+            const windowHeight = window.innerHeight;
+            
+            // Clear any existing raindrops first
+            rainContainer.innerHTML = '';
+            
+            for (let i = 0; i < dropCount; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'raindrop';
+                
+                // Random positioning - distribute throughout the entire screen height initially
+                const left = Math.random() * 100; // random x position
+                const top = Math.random() * windowHeight; // random initial y position throughout the screen
+                const delay = Math.random() * 2; // shorter random delay
+                const duration = Math.random() * 0.4 + 0.8; // random duration between 0.8 and 1.2 seconds
+                
+                // Apply styles
+                drop.style.left = `${left}%`;
+                drop.style.top = `${top}px`; // Set initial y position
+                drop.style.animationDelay = `${delay}s`;
+                drop.style.animationDuration = `${duration}s`;
+                
+                // Add to container
+                rainContainer.appendChild(drop);
+            }
+        }
+    </script>
+</body>
+</html>
